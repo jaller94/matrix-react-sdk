@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { PropsWithChildren, useRef } from "react";
+import React, { PropsWithChildren, useEffect, useRef } from "react";
 import { User } from "matrix-js-sdk/src/matrix";
 import classNames from "classnames";
 
@@ -44,7 +44,7 @@ interface Props {
     readReceipts: IReadReceiptProps[];
     readReceiptMap: { [userId: string]: IReadReceiptInfo };
     checkUnmounting: () => boolean;
-    suppressAnimation: boolean;
+    suppressAnimation?: boolean;
     isTwelveHour: boolean;
     alignWithMessage?: boolean;
 }
@@ -73,6 +73,11 @@ function determineAvatarPosition(index: number, count: number, max: number): IAv
 export function ReadReceiptGroup(
     { readReceipts, readReceiptMap, checkUnmounting, suppressAnimation, isTwelveHour, alignWithMessage }: Props,
 ) {
+    const suppressAnimationInternal = useRef<boolean>(true);
+    useEffect(() => {
+        suppressAnimationInternal.current = false;
+    }, []);
+
     const [menuDisplayed, button, openMenu, closeMenu] = useContextMenu();
     const [{ showTooltip, hideTooltip }, tooltip] = useTooltip({
         label: _t("Seen by %(count)s people", { count: readReceipts.length }),
@@ -131,7 +136,7 @@ export function ReadReceiptGroup(
                 hidden={hidden}
                 readReceiptInfo={readReceiptInfo}
                 checkUnmounting={checkUnmounting}
-                suppressAnimation={suppressAnimation}
+                suppressAnimation={suppressAnimation ?? suppressAnimationInternal.current}
                 timestamp={receipt.ts}
                 showTwelveHour={isTwelveHour}
             />
