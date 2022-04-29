@@ -16,6 +16,7 @@ limitations under the License.
 
 import React, { PropsWithChildren, useRef } from "react";
 import { User } from "matrix-js-sdk/src/matrix";
+import classNames from "classnames";
 
 import ReadReceiptMarker, { IReadReceiptInfo } from "./ReadReceiptMarker";
 import { IReadReceiptProps } from "./EventTile";
@@ -45,6 +46,7 @@ interface Props {
     checkUnmounting: () => boolean;
     suppressAnimation: boolean;
     isTwelveHour: boolean;
+    alignWithMessage?: boolean;
 }
 
 interface IAvatarPosition {
@@ -69,12 +71,16 @@ function determineAvatarPosition(index: number, count: number, max: number): IAv
 }
 
 export function ReadReceiptGroup(
-    { readReceipts, readReceiptMap, checkUnmounting, suppressAnimation, isTwelveHour }: Props,
+    { readReceipts, readReceiptMap, checkUnmounting, suppressAnimation, isTwelveHour, alignWithMessage }: Props,
 ) {
     const [menuDisplayed, button, openMenu, closeMenu] = useContextMenu();
     const [{ showTooltip, hideTooltip }, tooltip] = useTooltip({
         label: _t("Seen by %(count)s people", { count: readReceipts.length }),
         alignment: Alignment.TopRight,
+    });
+
+    const className = classNames("mx_ReadReceiptGroup", {
+        "mx_ReadReceiptGroup--alignWithMessage": alignWithMessage,
     });
 
     // return early if there are no read receipts
@@ -88,7 +94,7 @@ export function ReadReceiptGroup(
         // See also https://github.com/vector-im/element-web/issues/17561
         return (
             <div className="mx_EventTile_msgOption">
-                <div className="mx_ReadReceiptGroup">
+                <div className={className}>
                     <div className="mx_ReadReceiptGroup_button">
                         <span className="mx_ReadReceiptGroup_container" />
                     </div>
@@ -169,7 +175,7 @@ export function ReadReceiptGroup(
 
     return (
         <div className="mx_EventTile_msgOption">
-            <div className="mx_ReadReceiptGroup">
+            <div className={className}>
                 <AccessibleButton
                     className="mx_ReadReceiptGroup_button"
                     inputRef={button}

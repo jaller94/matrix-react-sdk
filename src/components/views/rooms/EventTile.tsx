@@ -1210,6 +1210,7 @@ export class UnwrappedEventTile extends React.Component<IProps, IState> {
                     checkUnmounting={this.props.checkUnmounting}
                     suppressAnimation={this.suppressReadReceiptAnimation}
                     isTwelveHour={this.props.isTwelveHour}
+                    alignWithMessage
                 />;
             }
         }
@@ -1606,7 +1607,7 @@ function SentReceipt({ messageState }: ISentReceiptProps) {
 
     return (
         <div className="mx_EventTile_msgOption">
-            <div className="mx_ReadReceiptGroup">
+            <div className="mx_ReadReceiptGroup mx_ReadReceiptGroup--alignWithMessage">
                 <div
                     className="mx_ReadReceiptGroup_button"
                     onMouseOver={showTooltip}
